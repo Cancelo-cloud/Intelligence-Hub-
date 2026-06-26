@@ -1,339 +1,315 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta
-    name="description"
-    content="CCC Intelligence Hub — environmental collective governance dashboard"
-  >
-
-  <title>CCC Intelligence Hub</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
-
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="CCC Intelligence Hub — environmental collective governance dashboard"/>
+<title>CCC Intelligence Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --night:#0d1117;--s1:#161b22;--s2:#1f2937;
+  --border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.14);
+  --forest:#2d6a35;--forest-bright:#4ade80;--forest-dim:rgba(45,106,53,0.25);
+  --amber:#f59e0b;--blue:#60a5fa;
+  --tp:#f0f6fc;--ts:#8b949e;--tm:#484f58;
+  --serif:'Georgia',serif;--sans:'DM Sans','Inter',system-ui,sans-serif;--mono:'Courier New',monospace;
+  --r:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--night);color:var(--tp);font-size:14px;line-height:1.6;min-height:100vh}
+.ambient{position:fixed;pointer-events:none;border-radius:50%;filter:blur(80px);opacity:0.12;z-index:0}
+.ambient-one{width:400px;height:400px;background:#2d6a35;top:-100px;right:-50px}
+.ambient-two{width:300px;height:300px;background:#1a3d8a;bottom:-50px;left:-80px}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1.5rem;background:rgba(13,17,23,0.9);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:var(--tp)}
+.brand-mark{color:var(--forest-bright);font-size:1.1rem}
+.brand strong{font-size:0.9rem;font-weight:600}
+.brand small{display:block;font-size:10px;color:var(--ts);font-weight:400}
+.topnav{display:flex;gap:1.25rem}
+.topnav a{font-size:12px;color:var(--ts);text-decoration:none;transition:color 0.15s}
+.topnav a:hover{color:var(--forest-bright)}
+.system-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ts);font-family:var(--mono)}
+.status-light{width:7px;height:7px;border-radius:50%;background:var(--forest-bright);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.shell{max-width:960px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:1}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding:3rem 1.5rem 2rem;max-width:960px;margin:0 auto;position:relative;z-index:1}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--forest-bright);margin-bottom:0.75rem}
+.hero-copy h1{font-size:1.65rem;font-weight:700;line-height:1.2;margin-bottom:1rem}
+.hero-copy h1 span{color:var(--forest-bright)}
+.hero-intro{font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:1.5rem;max-width:420px}
+.hero-actions{display:flex;gap:0.6rem;flex-wrap:wrap}
+.button{display:inline-flex;align-items:center;gap:6px;padding:0.55rem 1.1rem;border-radius:var(--r);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;cursor:pointer;border:none;font-family:var(--sans)}
+.button-primary{background:var(--forest);color:#fff}
+.button-primary:hover{background:#3d8a47}
+.button-secondary{background:transparent;border:1px solid var(--border-strong);color:var(--ts)}
+.button-secondary:hover{border-color:var(--forest-bright);color:var(--forest-bright)}
+.observatory-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;height:fit-content}
+.observatory-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;font-size:11px}
+.observatory-head span:first-child{color:var(--ts);font-family:var(--mono)}
+.signal{color:var(--forest-bright);display:flex;align-items:center;gap:4px}
+.signal::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--forest-bright);display:inline-block}
+.flow-list{list-style:none;display:flex;flex-direction:column;gap:0}
+.flow-list li{display:flex;align-items:center;gap:8px;padding:0.4rem 0;font-size:11px;color:var(--ts);border-bottom:1px solid var(--border)}
+.flow-list li:last-child{border-bottom:none}
+.flow-num{width:18px;height:18px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--tm);flex-shrink:0;font-family:var(--mono)}
+.flow-list li.active .flow-num{background:rgba(45,106,53,0.25);border-color:var(--forest);color:var(--forest-bright)}
+.flow-list li.active{color:var(--tp)}
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;padding:1.5rem;max-width:960px;margin:0 auto;position:relative;z-index:1}
+.action-card{display:flex;align-items:center;gap:0.75rem;padding:0.9rem 1rem;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);text-decoration:none;color:var(--tp);transition:all 0.15s}
+.action-card:hover{border-color:var(--forest);background:var(--s2)}
+.action-icon{font-size:1.1rem;color:var(--forest-bright);flex-shrink:0}
+.action-card span small{display:block;font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:0.08em;font-family:var(--mono);margin-bottom:1px}
+.action-card span strong{display:block;font-size:12px;font-weight:600;margin-bottom:1px}
+.action-card span em{display:block;font-size:11px;color:var(--ts);font-style:normal}
+.action-card b{margin-left:auto;color:var(--ts);font-size:14px;font-weight:400;flex-shrink:0}
+.section{padding:2rem 1.5rem;max-width:960px;margin:0 auto;position:relative;z-index:1}
+.section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;margin-bottom:1.5rem}
+.section-heading h2{font-size:1.2rem;font-weight:700;margin-top:0.25rem}
+.section-heading > p{font-size:12px;color:var(--ts);line-height:1.6;max-width:300px;flex-shrink:0}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem}
+.metric-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
+.m-label{font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:0.08em;font-family:var(--mono);margin-bottom:0.25rem}
+.m-value{font-size:1.6rem;font-weight:700;color:var(--tp);line-height:1}
+.m-sub{font-size:11px;color:var(--ts);margin-top:0.2rem}
+.partnership-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.75rem}
+.p-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color 0.15s}
+.p-card:hover{border-color:var(--forest)}
+.p-card-head{padding:0.9rem 1rem 0.75rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem}
+.p-card-name{font-size:0.9rem;font-weight:600;line-height:1.3}
+.p-id{font-family:var(--mono);font-size:10px;color:var(--forest-bright);background:rgba(45,106,53,0.25);border:1px solid var(--forest);padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.p-meta{padding:0.6rem 1rem;display:flex;gap:1.5rem;border-bottom:1px solid var(--border)}
+.p-meta-item{display:flex;flex-direction:column;gap:1px}
+.p-meta-lbl{font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:0.06em;font-family:var(--mono)}
+.p-meta-val{font-size:11px;color:var(--ts)}
+.p-status-active{color:var(--forest-bright)}
+.p-actions{padding:0.7rem 1rem;display:flex;gap:0.4rem;flex-wrap:wrap}
+.p-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--s2);color:var(--ts);text-decoration:none;transition:all 0.15s;cursor:pointer}
+.p-btn:hover{border-color:var(--forest-bright);color:var(--forest-bright)}
+.p-btn.primary{background:rgba(45,106,53,0.25);border-color:var(--forest);color:var(--forest-bright)}
+.p-btn.primary:hover{background:var(--forest);color:#fff}
+.intelligence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem}
+.intel-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;display:flex;flex-direction:column;gap:0.5rem;position:relative;overflow:hidden}
+.intel-card.featured{border-color:var(--forest)}
+.intel-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--forest-bright)}
+.intel-number{font-family:var(--mono);font-size:10px;color:var(--tm)}
+.intel-kicker{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--forest-bright);font-family:var(--mono)}
+.intel-card h3{font-size:0.9rem;font-weight:600;color:var(--tp)}
+.intel-card p{font-size:12px;color:var(--ts);line-height:1.6;flex:1}
+.intel-card a{font-size:11px;color:var(--ts);text-decoration:none;display:inline-flex;align-items:center;gap:4px;padding-top:0.6rem;border-top:1px solid var(--border);transition:color 0.15s;font-family:var(--mono)}
+.intel-card a:hover{color:var(--forest-bright)}
+.cycle-panel{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;display:grid;grid-template-columns:1fr 1.5fr;gap:2rem;align-items:start}
+.cycle-copy h2{font-size:1.1rem;font-weight:700;margin:0.4rem 0 0.75rem;line-height:1.3}
+.cycle-copy p{font-size:12px;color:var(--ts);line-height:1.6}
+.cycle-track{display:flex;flex-direction:column;gap:0}
+.cycle-step{display:flex;gap:1rem;align-items:flex-start}
+.cycle-step-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.c-num{width:28px;height:28px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--tm);z-index:1}
+.c-connector{width:1px;height:28px;background:var(--border);margin:2px 0}
+.cycle-step:last-child .c-connector{display:none}
+.c-done .c-num{background:rgba(45,106,53,0.25);border-color:var(--forest);color:var(--forest-bright)}
+.cycle-step-copy{padding-top:4px;padding-bottom:1rem}
+.cycle-step-copy strong{font-size:12px;font-weight:600;display:block;margin-bottom:2px;color:var(--tp)}
+.cycle-step-copy span{font-size:11px;color:var(--ts)}
+.principle{padding:1.5rem;max-width:960px;margin:0 auto;background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:2rem;position:relative;z-index:1}
+.principle-label{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--tm);font-family:var(--mono);margin-bottom:0.4rem;display:block}
+blockquote{font-size:13px;font-style:italic;color:var(--ts);line-height:1.6;border:none;padding:0;max-width:500px}
+.footer{padding:1.25rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;max-width:960px;margin:0 auto;position:relative;z-index:1}
+.footer strong{display:block;font-size:12px;font-weight:600}
+.footer span{font-size:11px;color:var(--ts)}
+@media(max-width:700px){
+  .hero{grid-template-columns:1fr}
+  .observatory-card{display:none}
+  .quick-actions,.metric-grid,.intelligence-grid{grid-template-columns:1fr}
+  .cycle-panel{grid-template-columns:1fr}
+  .topnav{display:none}
+  .section-heading{flex-direction:column}
+}
+</style>
 </head>
-
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
 
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="CCC Intelligence Hub home">
-      <span class="brand-mark" aria-hidden="true">◉</span>
+<div class="ambient ambient-one"></div>
+<div class="ambient ambient-two"></div>
 
-      <span>
-        <strong>CCC</strong>
-        <small>Intelligence Hub</small>
-      </span>
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="CCC Intelligence Hub home">
+    <span class="brand-mark" aria-hidden="true">◉</span>
+    <span><strong>CCC</strong><small>Intelligence Hub</small></span>
+  </a>
+  <nav class="topnav" aria-label="Primary navigation">
+    <a href="#pulse">Pulse</a>
+    <a href="#partnerships">Partnerships</a>
+    <a href="#intelligence">Intelligence</a>
+    <a href="#monthly-cycle">Monthly cycle</a>
+  </nav>
+  <div class="system-status">
+    <span class="status-light"></span>
+    System ready
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Environmental collective governance</p>
+      <h1>See what the collective is learning.<br><span>Know what must happen next.</span></h1>
+      <p class="hero-intro">The CCC Intelligence Hub turns partnership conversations into traceable evidence, decisions, action and shared learning.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">＋ Add weekly update</a>
+        <a class="button button-secondary" href="#partnerships">Open partnership rooms</a>
+      </div>
+    </div>
+    <aside class="observatory-card" aria-label="Intelligence flow">
+      <div class="observatory-head">
+        <span>Live operating model</span>
+        <span class="signal">Signal stable</span>
+      </div>
+      <ol class="flow-list">
+        <li class="active"><span class="flow-num">1</span>Conversation</li>
+        <li class="active"><span class="flow-num">2</span>Transcript</li>
+        <li class="active"><span class="flow-num">3</span>Meeting notes</li>
+        <li><span class="flow-num">4</span>Weekly update</li>
+        <li><span class="flow-num">5</span>Monthly synthesis</li>
+        <li><span class="flow-num">6</span>Emerging themes</li>
+        <li><span class="flow-num">7</span>Wisdom statements</li>
+      </ol>
+    </aside>
+  </section>
+
+  <div class="quick-actions">
+    <a class="action-card" href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">
+      <span class="action-icon">◆</span>
+      <span><small>Governance</small><strong>Record a decision</strong><em>Capture what was agreed and why.</em></span>
+      <b>↗</b>
     </a>
+    <a class="action-card" href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">
+      <span class="action-icon">→</span>
+      <span><small>Delivery</small><strong>Assign an action</strong><em>Set an owner, date and evidence.</em></span>
+      <b>↗</b>
+    </a>
+    <a class="action-card" href="https://drive.google.com" target="_blank" rel="noopener">
+      <span class="action-icon">▣</span>
+      <span><small>Evidence</small><strong>Open source repository</strong><em>Access transcripts, reports and media.</em></span>
+      <b>↗</b>
+    </a>
+  </div>
 
-    <nav class="topnav" aria-label="Primary navigation">
-      <a href="#pulse">Pulse</a>
-      <a href="#partnerships">Partnerships</a>
-      <a href="#intelligence">Intelligence</a>
-      <a href="#monthly-cycle">Monthly cycle</a>
-    </nav>
-
-    <div class="system-status">
-      <span class="status-light"></span>
-      System ready
+  <section class="section" id="pulse">
+    <div class="section-heading">
+      <div><p class="eyebrow">Current pulse</p><h2>The collective at a glance</h2></div>
+      <p>Headline indicators updated manually now, connected to live Notion data in Phase 2.</p>
     </div>
-  </header>
+    <div class="metric-grid">
+      <div class="metric-card"><div class="m-label">Partnerships active</div><div class="m-value">3</div><div class="m-sub">UEIP · UWASP · UCP</div></div>
+      <div class="metric-card"><div class="m-label">Open actions</div><div class="m-value">—</div><div class="m-sub">Connect Notion to populate</div></div>
+      <div class="metric-card"><div class="m-label">Coordination records</div><div class="m-value">—</div><div class="m-sub">This month</div></div>
+      <div class="metric-card"><div class="m-label">Decisions awaiting review</div><div class="m-value">—</div><div class="m-sub">Connect Notion to populate</div></div>
+      <div class="metric-card"><div class="m-label">Emerging themes</div><div class="m-value">—</div><div class="m-sub">Next monthly cycle</div></div>
+      <div class="metric-card"><div class="m-label">Monthly brief status</div><div class="m-value" style="font-size:1rem;padding-top:4px">Not started</div><div class="m-sub">July cycle opens soon</div></div>
+    </div>
+  </section>
 
-  <main id="top">
+  <section class="section" id="partnerships">
+    <div class="section-heading">
+      <div><p class="eyebrow">Partnership rooms</p><h2>Enter the work by catchment</h2></div>
+      <p>Each room connects the partnership's Notion view, source folder, actions and latest synthesis.</p>
+    </div>
+    <div class="partnership-grid">
+      <div class="p-card">
+        <div class="p-card-head"><div class="p-card-name">Umngeni Ecological Infrastructure Partnership</div><span class="p-id">UEIP</span></div>
+        <div class="p-meta"><div class="p-meta-item"><span class="p-meta-lbl">Catchment</span><span class="p-meta-val">uMngeni</span></div><div class="p-meta-item"><span class="p-meta-lbl">Status</span><span class="p-meta-val p-status-active">● Active</span></div></div>
+        <div class="p-actions"><a class="p-btn primary" href="https://app.notion.com/p/37d644d472d780698d03d3dfe0518354" target="_blank" rel="noopener">Open room</a><a class="p-btn" href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">+ Weekly update</a><a class="p-btn" href="https://drive.google.com" target="_blank" rel="noopener">Drive folder</a></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><div class="p-card-name">uMhlathuze Water Stewardship Partnership</div><span class="p-id">UWASP</span></div>
+        <div class="p-meta"><div class="p-meta-item"><span class="p-meta-lbl">Catchment</span><span class="p-meta-val">uMhlathuze</span></div><div class="p-meta-item"><span class="p-meta-lbl">Status</span><span class="p-meta-val p-status-active">● Active</span></div></div>
+        <div class="p-actions"><a class="p-btn primary" href="https://app.notion.com/p/37d644d472d780ee9d23fcd225ed1c85" target="_blank" rel="noopener">Open room</a><a class="p-btn" href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">+ Weekly update</a><a class="p-btn" href="https://drive.google.com" target="_blank" rel="noopener">Drive folder</a></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><div class="p-card-name">uMzimvubu Catchment Partnership</div><span class="p-id">UCP</span></div>
+        <div class="p-meta"><div class="p-meta-item"><span class="p-meta-lbl">Catchment</span><span class="p-meta-val">uMzimvubu</span></div><div class="p-meta-item"><span class="p-meta-lbl">Status</span><span class="p-meta-val p-status-active">● Active</span></div></div>
+        <div class="p-actions"><a class="p-btn primary" href="https://app.notion.com/p/37d644d472d780aaa84af6a7c4a6e790" target="_blank" rel="noopener">Open room</a><a class="p-btn" href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">+ Weekly update</a><a class="p-btn" href="https://drive.google.com" target="_blank" rel="noopener">Drive folder</a></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- HERO -->
-    <section class="hero shell">
-      <div class="hero-copy">
-        <p class="eyebrow">Environmental collective governance</p>
+  <section class="section" id="intelligence">
+    <div class="section-heading">
+      <div><p class="eyebrow">Pattern observatory</p><h2>From activity to intelligence</h2></div>
+      <p>AI suggests patterns. People inspect the evidence, validate meaning and decide what follows.</p>
+    </div>
+    <div class="intelligence-grid">
+      <article class="intel-card">
+        <div class="intel-number">01</div>
+        <span class="intel-kicker">Detect</span>
+        <h3>Emerging themes</h3>
+        <p>Recurring concerns, opportunities and signals appearing across coordination records.</p>
+        <a href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">Open themes database <span>↗</span></a>
+      </article>
+      <article class="intel-card featured">
+        <div class="intel-number">02</div>
+        <span class="intel-kicker">Interpret</span>
+        <h3>Emerging insights</h3>
+        <p>Evidence-based interpretations bridging coordination work into MERL and strategy.</p>
+        <a href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">Open insights database <span>↗</span></a>
+      </article>
+      <article class="intel-card">
+        <div class="intel-number">03</div>
+        <span class="intel-kicker">Synthesize</span>
+        <h3>Monthly intelligence brief</h3>
+        <p>One reviewed document: tensions, opportunities, blockers, decisions and communications.</p>
+        <a href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">Open monthly briefs <span>↗</span></a>
+      </article>
+    </div>
+  </section>
 
-        <h1>
-          See what the collective is learning.
-          <br>
-          <span>Know what must happen next.</span>
-        </h1>
-
-        <p class="hero-intro">
-          The CCC Intelligence Hub turns partnership conversations into
-          traceable evidence, decisions, action and shared learning.
-        </p>
-
-        <div class="hero-actions">
-          <a
-            class="button button-primary"
-            id="add-weekly-update"
-            href="#"
-            target="_blank"
-            rel="noopener"
-          >
-            <span>＋</span>
-            Add weekly update
-          </a>
-
-          <a
-            class="button button-secondary"
-            href="#partnerships"
-          >
-            Open partnership rooms
-          </a>
+  <section class="section" id="monthly-cycle">
+    <div class="cycle-panel">
+      <div class="cycle-copy">
+        <p class="eyebrow">Monthly intelligence cycle</p>
+        <h2>Evidence in. Judgment applied. Action out.</h2>
+        <p>Every insight should lead back to themes, coordination records, meeting notes and original evidence. Traceability is the system's promise.</p>
+      </div>
+      <div class="cycle-track">
+        <div class="cycle-step c-done">
+          <div class="cycle-step-line"><div class="c-num">01</div><div class="c-connector"></div></div>
+          <div class="cycle-step-copy"><strong>Collect evidence</strong><span>Transcripts, notes and partner updates logged weekly</span></div>
+        </div>
+        <div class="cycle-step">
+          <div class="cycle-step-line"><div class="c-num">02</div><div class="c-connector"></div></div>
+          <div class="cycle-step-copy"><strong>AI synthesis</strong><span>Themes, tensions and opportunities extracted from evidence</span></div>
+        </div>
+        <div class="cycle-step">
+          <div class="cycle-step-line"><div class="c-num">03</div><div class="c-connector"></div></div>
+          <div class="cycle-step-copy"><strong>Human validation</strong><span>Faye reviews and approves emerging insights</span></div>
+        </div>
+        <div class="cycle-step">
+          <div class="cycle-step-line"><div class="c-num">04</div><div class="c-connector"></div></div>
+          <div class="cycle-step-copy"><strong>Brief approved</strong><span>Monthly intelligence brief shared with leadership</span></div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <aside class="observatory-card" aria-label="Intelligence flow">
-        <div class="observatory-head">
-          <span>Live operating model</span>
-          <span class="signal">Signal stable</span>
-        </div>
-
-        <ol class="flow-list" id="flow-list"></ol>
-      </aside>
-    </section>
-
-    <!-- QUICK ACTIONS -->
-    <section class="quick-actions shell" aria-label="Quick actions">
-
-      <a
-        class="action-card"
-        id="record-decision"
-        href="#"
-        target="_blank"
-        rel="noopener"
-      >
-        <span class="action-icon">◆</span>
-
-        <span>
-          <small>Governance</small>
-          <strong>Record a decision</strong>
-          <em>Capture what was agreed and why.</em>
-        </span>
-
-        <b>↗</b>
-      </a>
-
-      <a
-        class="action-card"
-        id="assign-action"
-        href="#"
-        target="_blank"
-        rel="noopener"
-      >
-        <span class="action-icon">→</span>
-
-        <span>
-          <small>Delivery</small>
-          <strong>Assign an action</strong>
-          <em>Set an owner, date and evidence.</em>
-        </span>
-
-        <b>↗</b>
-      </a>
-
-      <a
-        class="action-card"
-        id="open-drive"
-        href="#"
-        target="_blank"
-        rel="noopener"
-      >
-        <span class="action-icon">▣</span>
-
-        <span>
-          <small>Evidence</small>
-          <strong>Open source repository</strong>
-          <em>Access transcripts, reports and media.</em>
-        </span>
-
-        <b>↗</b>
-      </a>
-
-    </section>
-
-    <!-- CURRENT PULSE -->
-    <section class="shell section" id="pulse">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Current pulse</p>
-          <h2>The collective at a glance</h2>
-        </div>
-
-        <p>
-          Headline indicators can be updated manually now and connected
-          to live Notion data later.
-        </p>
-      </div>
-
-      <div class="metric-grid" id="metric-grid"></div>
-    </section>
-
-    <!-- PARTNERSHIP ROOMS -->
-    <section class="shell section" id="partnerships">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Partnership rooms</p>
-          <h2>Enter the work by catchment</h2>
-        </div>
-
-        <p>
-          Each room connects the partnership’s Notion view, source folder,
-          actions and latest synthesis.
-        </p>
-      </div>
-
-      <div class="partnership-grid" id="partnership-grid"></div>
-    </section>
-
-    <!-- INTELLIGENCE -->
-    <section class="shell section" id="intelligence">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Pattern observatory</p>
-          <h2>From activity to intelligence</h2>
-        </div>
-
-        <p>
-          AI can suggest patterns. People inspect the evidence, validate
-          the meaning and decide what follows.
-        </p>
-      </div>
-
-      <div class="intelligence-grid">
-
-        <article class="intel-card">
-          <div class="intel-number">01</div>
-
-          <span class="intel-kicker">Detect</span>
-
-          <h3>Emerging themes</h3>
-
-          <p>
-            Recurring concerns, opportunities and signals appearing across
-            coordination records.
-          </p>
-
-          <a
-            id="open-themes"
-            href="#"
-            target="_blank"
-            rel="noopener"
-          >
-            Open themes database
-            <span>↗</span>
-          </a>
-        </article>
-
-        <article class="intel-card featured">
-          <div class="intel-number">02</div>
-
-          <span class="intel-kicker">Interpret</span>
-
-          <h3>Emerging insights</h3>
-
-          <p>
-            Evidence-based interpretations that bridge coordination work
-            into MERL and strategy.
-          </p>
-
-          <a
-            id="open-insights"
-            href="#"
-            target="_blank"
-            rel="noopener"
-          >
-            Open insights database
-            <span>↗</span>
-          </a>
-        </article>
-
-        <article class="intel-card">
-          <div class="intel-number">03</div>
-
-          <span class="intel-kicker">Synthesize</span>
-
-          <h3>Monthly intelligence brief</h3>
-
-          <p>
-            One reviewed document: tensions, opportunities, blockers,
-            decisions and communications.
-          </p>
-
-          <a
-            id="open-briefs"
-            href="#"
-            target="_blank"
-            rel="noopener"
-          >
-            Open monthly briefs
-            <span>↗</span>
-          </a>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- MONTHLY CYCLE -->
-    <section class="shell section" id="monthly-cycle">
-      <div class="cycle-panel">
-
-        <div class="cycle-copy">
-          <p class="eyebrow">Monthly intelligence cycle</p>
-
-          <h2>
-            Evidence in. Judgment applied. Action out.
-          </h2>
-
-          <p>
-            The system is designed to preserve traceability. Every insight
-            should lead back to themes, coordination records, meeting notes
-            and original evidence.
-          </p>
-        </div>
-
-        <div class="cycle-track" id="cycle-track"></div>
-
-      </div>
-    </section>
-
-    <!-- OPERATING PRINCIPLE -->
-    <section class="shell principle">
-      <div>
-        <span class="principle-label">Operating principle</span>
-
-        <blockquote>
-          Notion is the intelligence map. Google Drive is the evidence
-          repository. Human review is the authority.
-        </blockquote>
-      </div>
-
-      <a
-        class="button button-secondary"
-        id="open-hub"
-        href="#"
-        target="_blank"
-        rel="noopener"
-      >
-        Open full Notion hub
-      </a>
-    </section>
-
-  </main>
-
-  <footer class="footer shell">
+  <div class="principle shell">
     <div>
-      <strong>Cross-Catchment Collective</strong>
-      <span>Coordination → intelligence → collective action</span>
+      <span class="principle-label">Operating principle</span>
+      <blockquote>Notion is the intelligence map. Google Drive is the evidence repository. Human review is the authority.</blockquote>
     </div>
+    <a class="button button-secondary" href="https://app.notion.com/p/37e644d472d7802ab14fd4c34893fc11" target="_blank" rel="noopener">Open full Notion hub</a>
+  </div>
 
-    <span>Built with Green Beacons · 2026</span>
-  </footer>
+</main>
 
-  <script src="js/dashboard.js"></script>
+<footer class="footer">
+  <div><strong>Cross-Catchment Collective</strong><span>Coordination → intelligence → collective action</span></div>
+  <span>Built with Green Beacons · 2026</span>
+</footer>
+
 </body>
 </html>
